@@ -1,0 +1,46 @@
+import requests
+import json
+
+# Replace with your D-ID API credentials and the actual API endpoint
+api_key = "YWJoaXNhci5zdW5pbEBnbWFpbC5jb20:rVyc5NhEWBi2Wsn2xJxat"
+api_endpoint = "https://api.d-id.com/talks"
+
+headers = {
+    "Authorization": f"Basic {api_key}",
+    "Content-Type": "application/json"  # Specify content type as JSON
+}
+
+data = {
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Emily_f/image.jpeg",
+    "script": {
+        "type": "text",
+        "input": "Hello world!",
+        "provider": {
+            "type": "microsoft",
+            "voice_id": "en-US-JennyNeural",
+            "voice_config": {
+                "style": "Cheerful"
+            }
+        }
+    }
+}
+
+# Convert data to JSON format
+json_data = json.dumps(data)
+
+response = requests.post(api_endpoint, headers=headers, data=json_data)
+
+if response.status_code == 201:
+    # The response may contain information about the newly created resource, which might include a URL to the video or other data
+    response_data = response.json()  # Parse the JSON response
+
+    # Access the relevant information based on the API's response structure
+    video_url = response_data.get("video_url")
+
+    if video_url:
+        # Save or process the video URL as needed
+        print("Video URL:", video_url)
+    else:
+        print("No video URL found in the response.")
+else:
+    print("API request failed with status code:", response.status_code)
